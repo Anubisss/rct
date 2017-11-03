@@ -1,0 +1,70 @@
+service: rct
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: production
+  region: eu-central-1
+  memorySize: 128
+  timeout: 10
+  versionFunctions: false
+
+custom:
+  myStage: ${opt:stage, self:provider.stage}
+  tickersContainerBucketName: ${opt:host-s3-bucket-name}
+  nodeEnv:
+    Fn::If: [IsProductionStage, 'production', 'development']
+
+functions:
+  tickersGenerator:
+    handler: tickers-generator.Handler
+    description: Random Capital Tickers generator.
+    environment:
+      NODE_ENV: ${self:custom.nodeEnv}
+      HOST_S3_BUCKET_NAME: ${self:custom.tickersContainerBucketName}
+    events:
+      - schedule: rate(7 days)
+
+resources:
+  Conditions:
+    IsProductionStage:
+      Fn::Equals:
+        - ${self:custom.myStage}
+        - 'production'
+  Resources:
+    TickersBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.tickersContainerBucketName}
+        WebsiteConfiguration:
+          IndexDocument: 'tickers.html'
+          ErrorDocument: 'tickers.html'
+    TickersBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: TickersBucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Action: 's3:GetObject'
+              Resource:
+                Fn::Join:
+                  - ''
+                  -
+                    - 'arn:aws:s3:::'
+                    - Ref: TickersBucket
+                    - '/*'
+              Principal: '*'
+            - Effect: Allow
+              Action: 's3:PutObject'
+              Resource:
+                Fn::Join:
+                  - ''
+                  -
+                    - 'arn:aws:s3:::'
+                    - Ref: TickersBucket
+                    - '/*'
+              Principal:
+                AWS:
+                  - Fn::GetAtt: [IamRoleLambdaExecution, Arn]

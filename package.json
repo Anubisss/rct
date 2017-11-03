@@ -1,0 +1,34 @@
+{
+  "name": "rct",
+  "version": "1.0.0",
+  "description": "RCT (Random Capital Tickers) is a simple scheduled AWS Lambda function (managed via Serverless) which generates a no-design HTML file and puts it to an AWS S3 bucket. It filters stocks and ETFs and displays their tickers in lists which is useful to search on Finviz screener.",
+  "keywords": [
+    "random capital",
+    "stock",
+    "etf",
+    "ticker",
+    "finviz"
+  ],
+  "homepage": "https://github.com/Anubisss/rct",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Anubisss/rct.git"
+  },
+  "author": "David Vas, anuka <david.vas1@gmail.com>",
+  "license": "MIT",
+  "main": "tickers-generator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.142.0",
+    "ejs": "^2.5.7",
+    "lodash": "^4.17.4",
+    "moment": "^2.19.1",
+    "request": "^2.83.0",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "serverless": "^1.24.0"
+  }
+}

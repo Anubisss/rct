@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Random Capital Tickers</title>
+    <meta name="keywords" content="random capital, stock, etf, instrument, ticker, finviz screener, BATS global markets">
+    <meta name="description" content="Random Capital's instrument tickers list.">
+    <% if (gaTrackingId) { %>
+      <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', '<%= gaTrackingId %>', 'auto');
+      ga('send', 'pageview');
+      </script>
+      <script async src='https://www.google-analytics.com/analytics.js'></script>
+    <% } %>
+  </head>
+  <body>
+    <h1>Random Capital Tickers</h1>
+    <p>This is not a Random Capital product. Created for fun and personal usage. Original list: <a href="http://www.randomcapital.hu/ik" target="_blank">www.randomcapital.hu/ik</a></p>
+    <p>Generated on <%= generationDate %> by <a href="https://github.com/Anubisss/rct" target="_blank">RCT</a>.</p>
+    <% instrumentTypes.forEach(instrumentType => { %>
+      <hr>
+      <div>
+        <h2><%= instrumentType %></h2>
+        <% getInstrumentTypeCountries(instrumentType).forEach(country => { %>
+          <div>
+            <h3><%= country %></h3>
+            <div>
+              <%= getInstrumentTickers(instrumentType, country) %>
+            </div>
+            <div>
+              <a href="<%= encodeURI(finvizScreenerUrl) %><%= encodeURIComponent(getInstrumentTickers(instrumentType, country, false)) %>" target="_blank">Finviz screener</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% }) %>
+  </body>
+</html>
