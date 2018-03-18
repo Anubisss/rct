@@ -23,7 +23,7 @@ class InstrumentError extends Error {
   constructor(message, invalidElement) {
     super(message)
 
-    this.name = this.constructor.name
+    this.name = `${ this.constructor.name }: ${ message }`
     this.invalidElement = invalidElement
   }
 }
