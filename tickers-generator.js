@@ -121,7 +121,7 @@ function doParseAndValidation(body) {
     if (!_.isString(instrument.shortName) || instrument.shortName.length < 2 || instrument.shortName.length > 24) {
       throw new InstrumentError('invalid instrument short name', instrument.shortName)
     }
-    if (!_.isString(instrument.longName) || instrument.longName.length < 2 || instrument.longName.length > 48) {
+    if (!_.isString(instrument.longName) || instrument.longName.length < 2 || instrument.longName.length > 64) {
       throw new InstrumentError('invalid instrument long name', instrument.longName)
     }
     if (!_.isString(instrument.isinCode) || !instrument.isinCode.match(ISIN_CODE_REGEX)) {
