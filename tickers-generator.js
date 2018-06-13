@@ -19,6 +19,14 @@ const FINVIZ_SCREENER_URL = 'https://finviz.com/screener.ashx?v=111&t='
 const HOST_S3_BUCKET_NAME = process.env.HOST_S3_BUCKET_NAME
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
+class SimpleError extends Error {
+  constructor(message) {
+    super(message)
+
+    this.name = `${ this.constructor.name }: ${ message }`
+  }
+}
+
 class InstrumentError extends Error {
   constructor(message, invalidElement) {
     super(message)
@@ -90,7 +98,7 @@ function getInstrumentsData() {
         reject(err)
       }
       else if (res.statusCode !== 200) {
-        reject(new Error(`got non 200 response, status code: ${ res.statusCode }`))
+        reject(new SimpleError(`got non 200 response, status code: ${ res.statusCode }`))
       } else {
         resolve(body)
       }
@@ -143,7 +151,7 @@ function selectInstruments(instruments) {
 function renderHtml(instruments) {
   winston.info('renderHtml')
   if (!instruments.length) {
-    throw new Error('HTML renderer got 0 instruments')
+    throw new SimpleError('HTML renderer got 0 instruments')
   }
 
   const templateData = {
