@@ -10,7 +10,7 @@ const winston = require('winston')
 const ISIN_CODE_REGEX = /^([A-Z]{2})[A-Z0-9]{9}\d{1}$/
 
 const INSTRUMENT_TYPES_TO_SAVE = [ 'Részvény', 'ETF' ]
-const DATA_URL = 'http://www.randomcapital.hu/papirkereso/basedata.json'
+const DATA_URL = 'https://randomcapital.hu/uploads/ik/basedata.json'
 
 const TEMPLATE_PATH_TICKERS = './tickers.ejs'
 
