@@ -64,22 +64,38 @@ function getInstrumentTypeCountries(instruments, instrumentType) {
   )
 }
 
-function getInstrumentTickers(instruments, instrumentType, instrumentCountry, addSpace = true) {
+function getInstrumentTickers(instruments, instrumentType, instrumentCountry, addSpace = true, breakToPages = false) {
   const instrumentTickers = instruments.filter(instrumentRow => createInstrument(instrumentRow).type === instrumentType)
     .filter(instrumentRow => createInstrument(instrumentRow).isinCode.match(ISIN_CODE_REGEX)[1] === instrumentCountry)
     .map(instrumentRow => createInstrument(instrumentRow).ticker)
 
-  let tickersStr = ''
-  instrumentTickers.forEach((ticker, i) => {
-    tickersStr += normalizeTicker(ticker)
-    if (i < instrumentTickers.length - 1) {
-      tickersStr += ','
-      if (addSpace) {
-        tickersStr += ' '
+  const instrumentTickersPages = []
+  const maxTickersPerUri = 400
+  while (instrumentTickers.length > 0) {
+    instrumentTickersPages.push(instrumentTickers.splice(0, maxTickersPerUri))
+  }
+
+  const tickersStrs = []
+  instrumentTickersPages.forEach(tickersPage => {
+    let tickersStr = ''
+    tickersPage.forEach((ticker, i) => {
+      tickersStr += normalizeTicker(ticker)
+      if (i < tickersPage.length - 1) {
+        tickersStr += ','
+        if (addSpace) {
+          tickersStr += ' '
+        }
       }
-    }
+    })
+
+    tickersStrs.push(tickersStr)
   })
-  return tickersStr
+
+  if (breakToPages) {
+    return tickersStrs
+  }
+
+  return tickersStrs.join(addSpace ? ', ' : ',')
 }
 
 function getInstrumentsData() {

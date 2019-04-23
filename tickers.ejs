@@ -29,7 +29,9 @@
               <%= getInstrumentTickers(instrumentType, country) %>
             </div>
             <div>
-              <a href="<%= encodeURI(finvizScreenerUrl) %><%= encodeURIComponent(getInstrumentTickers(instrumentType, country, false)) %>" target="_blank">Finviz screener</a>
+            <% getInstrumentTickers(instrumentType, country, false, true).forEach((ticker, i) => { %>
+              <a href="<%= encodeURI(finvizScreenerUrl) %><%= encodeURIComponent(ticker) %>" target="_blank">Finviz screener #<%= i+1 %></a>
+            <% }) %>
             </div>
           </div>
         <% }) %>
