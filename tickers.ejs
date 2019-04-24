@@ -26,11 +26,15 @@
           <div>
             <h3><%= country %></h3>
             <div>
-              <%= getInstrumentTickers(instrumentType, country) %>
-            </div>
-            <div>
-            <% getInstrumentTickers(instrumentType, country, false, true).forEach((ticker, i) => { %>
-              <a href="<%= encodeURI(finvizScreenerUrl) %><%= encodeURIComponent(ticker) %>" target="_blank">Finviz screener #<%= i+1 %></a>
+            <% const countryTickers = getInstrumentTickers(instrumentType, country) %>
+            <% countryTickers.forEach((tickerPage, i) => { %>
+              <% if (countryTickers.length > 1) { %>
+              <h4>Part <%= i+1 %></h4>
+              <% } %>
+              <div>
+                <%= tickerPage %>
+              </div>
+              <a href="<%= encodeURI(finvizScreenerUrl) %><%= encodeURIComponent(tickerPage.replace(/ /g, '')) %>" target="_blank">Finviz screener %></a>
             <% }) %>
             </div>
           </div>

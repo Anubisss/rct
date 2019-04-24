@@ -14,6 +14,8 @@ const DATA_URL = 'https://randomcapital.hu/uploads/ik/basedata.json'
 
 const TEMPLATE_PATH_TICKERS = './tickers.ejs'
 
+const MAX_TICKER_PER_URI = 400
+
 const FINVIZ_SCREENER_URL = 'https://finviz.com/screener.ashx?v=111&t='
 
 const HOST_S3_BUCKET_NAME = process.env.HOST_S3_BUCKET_NAME
@@ -64,15 +66,14 @@ function getInstrumentTypeCountries(instruments, instrumentType) {
   )
 }
 
-function getInstrumentTickers(instruments, instrumentType, instrumentCountry, addSpace = true, breakToPages = false) {
+function getInstrumentTickers(instruments, instrumentType, instrumentCountry) {
   const instrumentTickers = instruments.filter(instrumentRow => createInstrument(instrumentRow).type === instrumentType)
     .filter(instrumentRow => createInstrument(instrumentRow).isinCode.match(ISIN_CODE_REGEX)[1] === instrumentCountry)
     .map(instrumentRow => createInstrument(instrumentRow).ticker)
 
   const instrumentTickersPages = []
-  const maxTickersPerUri = 400
   while (instrumentTickers.length > 0) {
-    instrumentTickersPages.push(instrumentTickers.splice(0, maxTickersPerUri))
+    instrumentTickersPages.push(instrumentTickers.splice(0, MAX_TICKER_PER_URI))
   }
 
   const tickersStrs = []
@@ -81,21 +82,14 @@ function getInstrumentTickers(instruments, instrumentType, instrumentCountry, ad
     tickersPage.forEach((ticker, i) => {
       tickersStr += normalizeTicker(ticker)
       if (i < tickersPage.length - 1) {
-        tickersStr += ','
-        if (addSpace) {
-          tickersStr += ' '
-        }
+        tickersStr += ', '
       }
     })
 
     tickersStrs.push(tickersStr)
   })
 
-  if (breakToPages) {
-    return tickersStrs
-  }
-
-  return tickersStrs.join(addSpace ? ', ' : ',')
+  return tickersStrs
 }
 
 function getInstrumentsData() {
