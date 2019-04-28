@@ -25,7 +25,8 @@
     "ejs": "^2.5.7",
     "lodash": "^4.17.4",
     "moment": "^2.19.1",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
     "winston": "^2.4.3"
   },
   "devDependencies": {

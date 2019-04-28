@@ -1,6 +1,6 @@
 'use strict'
 
-const request = require('request')
+const request = require('request-promise')
 const _ = require('lodash')
 const ejs = require('ejs')
 const moment = require('moment')
@@ -92,20 +92,14 @@ function getInstrumentTickers(instruments, instrumentType, instrumentCountry) {
   return tickersStrs
 }
 
-function getInstrumentsData() {
+async function getInstrumentsData() {
   winston.info('getInstrumentsData')
-  return new Promise((resolve, reject) => {
-    request.get(DATA_URL, (err, res, body) => {
-      if (err) {
-        reject(err)
-      }
-      else if (res.statusCode !== 200) {
-        reject(new Error(`got non 200 response, status code: ${ res.statusCode }`))
-      } else {
-        resolve(body)
-      }
-    })
-  })
+
+  try {
+    return await request.get(DATA_URL)
+  } catch (err) {
+    throw new Error(`got non 200 response, error name: ${ err.name }, status code: ${ err.statusCode }`)
+  }
 }
 
 function doParseAndValidation(body) {
@@ -186,7 +180,7 @@ function uploadToS3(html) {
   }).promise()
 }
 
-function Handler(event, context, callback) {
+async function Handler(event, context) {
   winston.remove(winston.transports.Console)
   winston.add(winston.transports.Console, {
     formatter: LogFormatter.bind(null, context.awsRequestId),
@@ -202,19 +196,19 @@ function Handler(event, context, callback) {
     googleAnalyticsEnabled: GA_TRACKING_ID ? true : false,
   })
 
-  getInstrumentsData()
-    .then(doParseAndValidation)
-    .then(selectInstruments)
-    .then(renderHtml)
-    .then(uploadToS3)
-    .then(() => {
-      winston.info('tickers generated')
-      callback(null, 'tickers generated')
-    })
-    .catch(err => {
-      winston.error('error occured during tickers generation', err)
-      callback(err)
-    })
+  try {
+    const instrumentsData = await getInstrumentsData()
+    const instruments = doParseAndValidation(instrumentsData)
+    const selectedInstruments = selectInstruments(instruments)
+    const html = await renderHtml(selectedInstruments)
+    await uploadToS3(html)
+  } catch (err) {
+    winston.error('error occured during tickers generation', err)
+    throw err
+  }
+
+  winston.info('tickers generated')
+  return 'tickers generated'
 }
 
 module.exports = {
