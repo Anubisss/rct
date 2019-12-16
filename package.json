@@ -23,7 +23,7 @@
   "dependencies": {
     "aws-sdk": "^2.142.0",
     "ejs": "^2.5.7",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.13",
     "moment": "^2.19.1",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
