@@ -182,9 +182,9 @@ function uploadToS3(html) {
 
 async function Handler(event, context) {
   winston.remove(winston.transports.Console)
-  winston.add(winston.transports.Console, {
-    formatter: LogFormatter.bind(null, context.awsRequestId),
-  })
+  winston.add(new winston.transports.Console({
+    format: winston.format.printf(LogFormatter.bind(null, context.awsRequestId)),
+  }))
 
   winston.info('starting', {
     nodeEnv: process.env.NODE_ENV,
