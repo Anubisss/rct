@@ -33,7 +33,7 @@ class InstrumentError extends Error {
 }
 
 function LogFormatter(awsRequestId, options) {
-  const { level, message: msg, meta } = options
+  const { level, message: msg, ...meta } = options
 
   return JSON.stringify({
     level,
