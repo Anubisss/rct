@@ -18,6 +18,8 @@ const MAX_TICKER_PER_URI = 400
 
 const FINVIZ_SCREENER_URL = 'https://finviz.com/screener.ashx?v=111&t='
 
+const CACHE_TTL = 3600
+
 const HOST_S3_BUCKET_NAME = process.env.HOST_S3_BUCKET_NAME
 const GA_TRACKING_ID = process.env.GA_TRACKING_ID
 
@@ -177,6 +179,7 @@ function uploadToS3(html) {
     Key: 'tickers.html',
     Body: html,
     ContentType: 'text/html; charset=utf-8',
+    CacheControl: `public, max-age=${CACHE_TTL}`,
   }).promise()
 }
 
