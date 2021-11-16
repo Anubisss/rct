@@ -27,7 +27,7 @@
     "serverless": "^1.67.0"
   },
   "dependencies": {
-    "aws-sdk": "^2.645.0",
+    "aws-sdk": "^2.814.0",
     "ejs": "^3.0.1",
     "lodash": "^4.17.21",
     "moment": "^2.24.0",
