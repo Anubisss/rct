@@ -1,3 +1,5 @@
+# This app/website doesn't work anymore since Random Capital merged into Erste Befektetési Zrt.
+
 # RCT (Random Capital Tickers)
 RCT is a simple scheduled AWS Lambda function (managed via Serverless) which generates a no-design HTML file and puts it to an AWS S3 bucket.
 It generator filters stocks and ETFs and displays their tickers in lists which is useful to search on Finviz screener.
